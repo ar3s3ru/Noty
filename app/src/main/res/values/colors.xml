@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorPriorityVeryHigh">#d50000</color>
+    <color name="colorPriorityVeryHighLight">#20d50000</color>
+
+    <color name="colorPriorityHigh">#ff6f00</color>
+    <color name="colorPriorityHighLight">#20ff6f00</color>
+
+    <color name="colorPriorityMedium">#558b2f</color>
+    <color name="colorPriorityMediumLight">#20558b2f</color>
+
+    <color name="colorPriorityLow">#1565c0</color>
+    <color name="colorPriorityLowLight">#201565c0</color>
+
+    <color name="colorPriorityVeryLow">#ad1457</color>
+    <color name="colorPriorityVeryLowLight">#20ad1457</color>
+</resources>
