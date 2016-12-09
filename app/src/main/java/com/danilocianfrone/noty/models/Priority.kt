@@ -74,8 +74,9 @@ enum class Priority {
      */
     @ColorRes fun TextColor(): Int {
         return when (this) {
-            VERY_HIGH, HIGH, LOW, VERY_LOW -> R.color.abc_primary_text_material_dark
-            MEDIUM -> R.color.abc_primary_text_material_light
+            // TODO: finish this
+            MEDIUM -> 0
+            else   -> 0
         }
     }
 

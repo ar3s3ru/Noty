@@ -40,26 +40,12 @@ class MainActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
 
-        // Check if is first boot
-        if (prefs.getBoolean(Names.FIRST_BOOT, true)) {
-            Log.i(TAG, "Is first boot")
-            // Write something to the database
-            realm.executeTransaction {
-                for (i in 0..50) {
-                    val note = realm.createObject(Note::class.java)
-                    note.priority = Priority.FromValue(i)
-                    note.content = "Note $i generated as proof"
-                }
+         when (prefs.getBoolean(Names.FIRST_BOOT, true)) {
+            true  -> startActivity(Intent(this, NoteActivity::class.java))  // Not first boot
+            false -> {                                                      // First boot
+                doWithSharedPrefsEditor(prefs, { it.putBoolean(Names.FIRST_BOOT, false) })
+                startActivity(Intent(this, TutorialActivity::class.java))   // Go to tutorial
             }
-            // Write new Value
-            doWithSharedPrefsEditor(prefs, { it.putBoolean(Names.FIRST_BOOT, false) })
-            // Go to TutorialActivity
-            startActivity(Intent(this, TutorialActivity::class.java))
-        } else {
-            Log.i(TAG, "Is not first boot")
-
-            // Go to NoteActivity
-            startActivity(Intent(this, NoteActivity::class.java))
         }
     }
 
