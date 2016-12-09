@@ -20,7 +20,6 @@ class NotePresenter(private val realm: Realm) : AbstractPresenter<List<Note>>() 
     override fun ReleaseView(view: Presenter.Presentable<List<Note>>) {
         if (view is NotePresentable<*>) {
             view.presenter = null
-            publish(view)
         }
     }
 
