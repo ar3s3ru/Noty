@@ -1,24 +1,37 @@
 package com.danilocianfrone.noty.presenters
 
-import io.realm.Realm
-
+import android.support.v7.widget.RecyclerView
 import com.danilocianfrone.noty.models.Note
 import com.danilocianfrone.noty.models.Priority
-import com.danilocianfrone.noty.presenters.Presentable as SuperPresentable
+import io.realm.Realm
 
 /**
  * Presenter used for all the views that needs Note as their models.
  */
-class NotePresenter(private val realm: Realm) : MultiplePresenter<List<Note>>() {
+class NotePresenter(private val realm: Realm) : AbstractPresenter<List<Note>>() {
 
-    override fun onDeliver(view: SuperPresentable<List<Note>>): List<Note>? =
-        if (view is Presentable) {
-            realm.where(Note::class.java)
-                    .equalTo("priorityVal", view.ofTarget().Value())
-                    .findAll()
-        } else null
-
-    interface Presentable : SuperPresentable<List<Note>> {
-        fun ofTarget(): Priority
+    override fun TakeView(view: Presenter.Presentable<List<Note>>) {
+        if (view is NotePresentable<*>) {
+            view.presenter = this
+            publish(view)
+        }
     }
+
+    override fun ReleaseView(view: Presenter.Presentable<List<Note>>) {
+        if (view is NotePresentable<*>) {
+            view.presenter = null
+            publish(view)
+        }
+    }
+
+    override fun onDeliver(view: Presenter.Presentable<List<Note>>): List<Note>? =
+            when (view) {
+                !is NotePresentable<*> -> null
+                else -> realm.where(Note::class.java)
+                            .equalTo("priorityVal", view.target.Value())
+                            .findAll()
+            }
 }
+
+abstract class NotePresentable<VH : RecyclerView.ViewHolder>(internal val target: Priority)
+    : AbstractPresenter.Companion.RecyclerPresentable<List<Note>, VH>()

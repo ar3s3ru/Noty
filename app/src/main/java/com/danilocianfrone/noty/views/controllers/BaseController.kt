@@ -1,5 +1,6 @@
 package com.danilocianfrone.noty.views.controllers
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,12 +8,14 @@ import butterknife.ButterKnife
 import butterknife.Unbinder
 import com.bluelinelabs.conductor.Controller
 import com.danilocianfrone.noty.Noty
-import kotlin.properties.Delegates
 
 /**
  *
  */
-abstract class BaseController : Controller() {
+abstract class BaseController : Controller {
+
+    constructor() : super()
+    constructor(args: Bundle) : super(args)
 
     private lateinit var unbinder: Unbinder
     protected val notyApplication: Noty by lazy { applicationContext as Noty }

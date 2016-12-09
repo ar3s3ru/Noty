@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import butterknife.BindView
-import butterknife.ButterKnife
 import com.danilocianfrone.noty.Names
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.AppScope
@@ -27,8 +26,6 @@ class MainActivity : BaseActivity() {
     @Inject @AppScope lateinit var prefs: SharedPreferences
     @Inject @AppScope lateinit var realm: Realm
 
-    @BindView(R.id.adapter_note_view) lateinit var note: NoteView
-
     override fun onSetContentView() {
         setContentView(R.layout.activity_main)
     }
@@ -42,8 +39,6 @@ class MainActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-
-        Log.i(TAG, note.toString())
 
         // Check if is first boot
         if (prefs.getBoolean(Names.FIRST_BOOT, true)) {

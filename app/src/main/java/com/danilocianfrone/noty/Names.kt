@@ -10,4 +10,6 @@ object Names {
     const val PRIORITY = "priority"
     // Realm database name
     const val REALM_NAME = "noty"
+    // Tag key for named parameters
+    const val TAG = "TAG"
 }

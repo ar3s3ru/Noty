@@ -5,11 +5,9 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import android.widget.TextView
-
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.models.Note
 import com.danilocianfrone.noty.models.Priority
-import org.w3c.dom.Text
 
 /**
  * Custom ViewGroup that displays a Note.

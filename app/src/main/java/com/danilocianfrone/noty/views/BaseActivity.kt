@@ -2,13 +2,9 @@ package com.danilocianfrone.noty.views
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import butterknife.ButterKnife
-
 import butterknife.Unbinder
-
 import com.danilocianfrone.noty.Noty
 
 /**

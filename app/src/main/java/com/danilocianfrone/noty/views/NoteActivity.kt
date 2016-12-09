@@ -1,18 +1,14 @@
 package com.danilocianfrone.noty.views
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.ViewGroup
 import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.Unbinder
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.NoteActivityModule
 import com.danilocianfrone.noty.views.controllers.NoteListController
-
 import javax.inject.Inject
 
 class NoteActivity : BaseActivity() {
@@ -22,14 +18,18 @@ class NoteActivity : BaseActivity() {
 
     @Inject lateinit var listController: NoteListController
 
+    // Dagger object graph
+    internal val objectGraph by lazy {
+        notyApplication.objectGraph.plusNoteActivity()
+                .withModule(NoteActivityModule(this))
+                .build()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Inject object graph
-        notyApplication.objectGraph.plusNoteActivity()
-                .withModule(NoteActivityModule(this))
-                .build()
-                .inject(this)
+        objectGraph.inject(this)
 
         // Attach Conductor root
         conductorRouter = Conductor.attachRouter(this, noteActivityRoot, savedInstanceState)

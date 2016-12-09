@@ -15,9 +15,9 @@ import javax.inject.Scope
 /**
  *
  */
-@Scope annotation class ControllerScope
+@Scope annotation class NoteControllerScope
 
 /**
  *
  */
-@Scope annotation class PageScope
+@Scope annotation class PageControllerScope

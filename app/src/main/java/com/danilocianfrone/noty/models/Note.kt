@@ -4,7 +4,7 @@ import io.realm.RealmObject
 import io.realm.annotations.Ignore
 import io.realm.annotations.Index
 import io.realm.annotations.RealmClass
-import java.util.Date
+import java.util.*
 
 /**
  * Model class for Note object.
@@ -17,8 +17,8 @@ import java.util.Date
  */
 @RealmClass
 open class Note : RealmObject() {
-    @Index private var priorityVal: Int = Priority.MEDIUM.Value()  // Default Value to normal
-    @Ignore var priority: Priority      = Priority.MEDIUM          // This is ignorated from Realm
+    @Index private var priorityVal: Int = Priority.MEDIUM.Value()         // Default Value to normal
+    @Ignore var priority: Priority      = Priority.FromValue(priorityVal) // This is ignorated from Realm
         // When is set a new Value, update priorityVal Value as well
         set(value) { priorityVal = value.Value() }
 

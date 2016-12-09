@@ -7,34 +7,47 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import javax.inject.Inject
 import butterknife.BindView
+import com.danilocianfrone.noty.BundleBuilder
 import com.danilocianfrone.noty.Names
-import com.danilocianfrone.noty.Noty
-
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.AppScope
-import com.danilocianfrone.noty.models.Note
+import com.danilocianfrone.noty.dagger.PageControllerModule
+import com.danilocianfrone.noty.dagger.PageControllerScope
 import com.danilocianfrone.noty.models.Priority
 import com.danilocianfrone.noty.presenters.NotePresenter
-import com.danilocianfrone.noty.presenters.Presenter
 import com.danilocianfrone.noty.views.recyclers.NoteListAdapter
+import javax.inject.Inject
 
 // TODO: implement save controller state
 //
 // TODO: ControllerPagerAdapter shows 3 controller children at a time, so you need to adjust
 //       the Presenter and its takeView
-class PageController(args: Bundle) : BaseController(), NotePresenter.Presentable {
+class PageController(args: Bundle) : BaseController(args) {
+
+    constructor(priorityValue: Int) : this(
+            BundleBuilder(Bundle())
+                    .putInt(Names.PRIORITY, priorityValue)
+                    .build()
+    )
 
     @BindView(R.id.controller_page_recycler) lateinit var recycler: RecyclerView
 
-    @Inject @AppScope lateinit var presenter: NotePresenter
-    private lateinit var adapter: NoteListAdapter
-    private lateinit var updater: Presenter.Updater
+    @Inject @AppScope
+    lateinit var presenter: NotePresenter
 
-    internal val priority: Priority = Priority.FromValue(args.getInt(Names.PRIORITY, 0))
-    private val TAG = "PageController_${priority.name}"
+    @Inject @PageControllerScope
+    lateinit var adapter: NoteListAdapter
+
+    @Inject @PageControllerScope
+    lateinit var priority: Priority
+
+    private val TAG by lazy { "PageController_${priority.name}" }
+    private val objectGraph by lazy {
+        (parentController as NoteListController).objectGraph.plusPageController()
+                .withModule(PageControllerModule(this))
+                .build()
+    }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View =
         inflater.inflate(R.layout.controller_note_page, container, false)
@@ -43,9 +56,7 @@ class PageController(args: Bundle) : BaseController(), NotePresenter.Presentable
         super.onViewBound(view)
 
         // Create object graph
-        notyApplication.objectGraph.inject(this)
-
-        adapter = NoteListAdapter()
+        objectGraph.inject(this)
 
         recycler.layoutManager = LinearLayoutManager(view.context)
         recycler.adapter = adapter
@@ -54,28 +65,12 @@ class PageController(args: Bundle) : BaseController(), NotePresenter.Presentable
     override fun onAttach(view: View) {
         super.onAttach(view)
         Log.i(TAG, "Taking view")
-        updater = presenter.TakeView(this) // Take adapter as presentable view
-        updater.RequestUpdate()              // Request first updater
+        presenter.TakeView(adapter) // Take adapter as presentable view
     }
 
     override fun onDetach(view: View) {
         super.onDetach(view)
         Log.i(TAG, "Releasing view")
-        presenter.ReleaseView(updater)
-    }
-
-    override fun ofTarget(): Priority = priority
-
-    override fun onUpdateView(data: List<Note>) {
-        adapter.dataset = data
-        adapter.notifyDataSetChanged()
-    }
-
-    override fun onUpdateError(throwable: Throwable) {
-        throwable.printStackTrace()
-    }
-
-    override fun onDetach() {
-        Log.i(TAG, "View released")
+        presenter.ReleaseView(adapter)
     }
 }
