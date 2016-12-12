@@ -16,10 +16,7 @@ import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 import com.bluelinelabs.conductor.support.ControllerPagerAdapter
 
 import com.danilocianfrone.noty.R
-import com.danilocianfrone.noty.dagger.ActivityScope
-import com.danilocianfrone.noty.dagger.AppScope
-import com.danilocianfrone.noty.dagger.ListControllerModule
-import com.danilocianfrone.noty.dagger.NoteControllerScope
+import com.danilocianfrone.noty.dagger.*
 import com.danilocianfrone.noty.models.Priority
 import com.danilocianfrone.noty.views.NoteActivity
 import com.squareup.leakcanary.RefWatcher
@@ -27,6 +24,10 @@ import com.squareup.leakcanary.RefWatcher
 import javax.inject.Inject
 
 class NoteListController : BaseController(), View.OnClickListener {
+
+    interface Listener {
+        fun onAddButtonClick()
+    }
 
     @BindView(R.id.controller_note_pager)
     lateinit var pager: ViewPager
@@ -38,10 +39,10 @@ class NoteListController : BaseController(), View.OnClickListener {
     lateinit var fabNew: FloatingActionButton
 
     @Inject @AppScope lateinit var refWatcher: RefWatcher
-    @Inject @ActivityScope lateinit var noteCreation: NoteCreationController
     @Inject @NoteControllerScope lateinit var pagerAdapter: PagerAdapter
 
     // Dagger object graph
+    private var injected = false
     internal val objectGraph by lazy {
         (activity as NoteActivity).objectGraph.plusNoteController()
                 .withModule(ListControllerModule(this))
@@ -55,36 +56,20 @@ class NoteListController : BaseController(), View.OnClickListener {
         super.onViewBound(view)
 
         // Inject object graph
-        objectGraph.inject(this)
+        injectEventually(objectGraph)
 
         // Setup pager and tab layout
         pager.adapter = pagerAdapter
-        tabLayout.setupWithViewPager(pager, true)
+        tabLayout.setupWithViewPager(pager)
 
         // Add onClick callback
         fabNew.setOnClickListener(this)
     }
 
-    override fun onSaveViewState(view: View, outState: Bundle) {
-        outState.putParcelable(PAGER, pager.onSaveInstanceState())
-        outState.putInt(TAB_LAYOUT, tabLayout.selectedTabPosition)
-    }
-
-    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
-        tabLayout.getTabAt(savedViewState.getInt(TAB_LAYOUT))?.select()
-        pager.onRestoreInstanceState(
-                savedViewState.getParcelable(PAGER)
-        )
-    }
-
     override fun onClick(view: View) {
         if (view == fabNew) {
-            // Shows up NoteCreation
-            router.pushController(
-                    RouterTransaction.with(noteCreation)
-                            .popChangeHandler(FadeChangeHandler())
-                            .pushChangeHandler(FadeChangeHandler())
-            )
+            // Shows up NoteCreation (NoteActivity MUST implement Listener)
+            (activity as Listener).onAddButtonClick()
         }
     }
 
@@ -93,14 +78,26 @@ class NoteListController : BaseController(), View.OnClickListener {
         refWatcher.watch(this)      // Spots memory leaks on destroy
     }
 
-    override fun handleBack(): Boolean {
-        return super.handleBack()
+    override fun onSaveViewState(view: View, outState: Bundle) {
+        super.onSaveViewState(view, outState)
+        outState.putParcelable(PAGER, pager.onSaveInstanceState())
+    }
+
+    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
+        super.onRestoreViewState(view, savedViewState)
+        pager.onRestoreInstanceState(savedViewState.getParcelable(PAGER))
+    }
+
+    private fun injectEventually(objectGraph: NoteControllerComponent) {
+        if (!injected) {
+            objectGraph.inject(this)
+            injected = true
+        }
     }
 
     companion object {
         private const val TAG = "NoteListController"
         private const val PAGER = "$TAG.Pager"
-        private const val TAB_LAYOUT = "$TAG.TabLayout"
     }
 }
 

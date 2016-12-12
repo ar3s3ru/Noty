@@ -30,19 +30,17 @@ class NoteListAdapter(priority: Priority)
         }
     }
 
-    override fun notifyUpdate() {
-        Log.i(TAG, "notifying update")
-        super.notifyUpdate()
-    }
-
     override fun onAttach() {
         if (dataset == null) { notifyUpdate() }
     }
 
     override fun onUpdateView(data: MutableList<Note>) {
+        // Update only if the new dataset has some meaningful values
         if (data.size > 0) {
+            // If the dataset had some elements before, notify removal
             dataset?.let { notifyItemRangeRemoved(0, it.count()) }
             dataset = data
+            // Notify addition
             notifyItemRangeChanged(0, dataset!!.count())
         }
     }

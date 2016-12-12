@@ -1,5 +1,8 @@
 package com.danilocianfrone.noty.dagger
 
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
+import com.danilocianfrone.noty.Names
 import com.danilocianfrone.noty.views.NoteActivity
 import com.danilocianfrone.noty.views.controllers.DocumentController
 import com.danilocianfrone.noty.views.controllers.FastCreationController
@@ -9,6 +12,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
 import java.lang.ref.WeakReference
+import javax.inject.Named
 import javax.inject.Scope
 
 /**

@@ -1,27 +1,41 @@
 package com.danilocianfrone.noty.views
 
 import android.os.Bundle
-import android.util.Log
-import android.view.ViewGroup
 import butterknife.BindView
+import com.bluelinelabs.conductor.ChangeHandlerFrameLayout
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.ActivityScope
 import com.danilocianfrone.noty.dagger.AppScope
 import com.danilocianfrone.noty.dagger.NoteActivityModule
+import com.danilocianfrone.noty.views.controllers.NoteCreationController
 import com.danilocianfrone.noty.views.controllers.NoteListController
 import com.squareup.leakcanary.RefWatcher
 import javax.inject.Inject
 
-class NoteActivity : BaseActivity() {
+class NoteActivity : BaseActivity(), NoteListController.Listener {
 
-    @BindView(R.id.activity_note_root) lateinit var noteActivityRoot: ViewGroup
+    @BindView(R.id.activity_note_root) lateinit var noteActivityRoot: ChangeHandlerFrameLayout
+
+    @Inject @AppScope lateinit var refWatcher: RefWatcher
 
     private lateinit var conductorRouter: Router
+
+    @Inject @ActivityScope lateinit var noteCreation: NoteCreationController
     @Inject @ActivityScope lateinit var listController: NoteListController
-    @Inject @AppScope lateinit var refWatcher: RefWatcher
+
+    private val noteCreationTransaction: RouterTransaction by lazy {
+        RouterTransaction.with(noteCreation)
+                .popChangeHandler(FadeChangeHandler())
+                .pushChangeHandler(FadeChangeHandler())
+    }
+
+    private val noteListTransaction: RouterTransaction by lazy {
+        RouterTransaction.with(listController)
+    }
 
     // Dagger object graph
     internal val objectGraph by lazy {
@@ -38,9 +52,12 @@ class NoteActivity : BaseActivity() {
 
         // Attach Conductor root
         conductorRouter = Conductor.attachRouter(this, noteActivityRoot, savedInstanceState)
-        if (!conductorRouter.hasRootController()) {
-            conductorRouter.setRoot(RouterTransaction.with(listController))
-        }
+        if (!conductorRouter.hasRootController()) { conductorRouter.setRoot(noteListTransaction) }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        conductorRouter.saveInstanceState(outState)
     }
 
     override fun onSetContentView() {
@@ -48,12 +65,6 @@ class NoteActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-//        // TODO: refactor this
-//        Log.i(TAG, "Backstack size is ${conductorRouter.backstackSize}")
-//        if (conductorRouter.backstackSize == 1 || !conductorRouter.handleBack()) {
-//            super.onBackPressed()
-//        }
-        Log.i(TAG, "handleBack()")
         if (!conductorRouter.handleBack()) {
             super.onBackPressed()
         }
@@ -62,6 +73,10 @@ class NoteActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         refWatcher.watch(this)  // Spots memory leaks on destroying
+    }
+
+    override fun onAddButtonClick() {
+        conductorRouter.setRoot(noteCreationTransaction)
     }
 
     companion object {

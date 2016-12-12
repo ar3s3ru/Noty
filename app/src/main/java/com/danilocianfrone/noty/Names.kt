@@ -12,4 +12,7 @@ object Names {
     const val REALM_NAME = "noty"
     // Tag key for named parameters
     const val TAG = "TAG"
+    // Transactions
+    const val NOTE_LIST_TRANSACTION = "NoteActivity.NoteListTransaction"
+    const val NOTE_CREATION_TRANSACTION = "NoteActivity.NoteCreationTransaction"
 }

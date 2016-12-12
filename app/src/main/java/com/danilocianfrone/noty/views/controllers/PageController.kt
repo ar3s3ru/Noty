@@ -78,9 +78,7 @@ class PageController(args: Bundle) : BaseController(args) {
 
     override fun onRestoreViewState(view: View, savedViewState: Bundle) {
         super.onRestoreViewState(view, savedViewState)
-        recycler.layoutManager.onRestoreInstanceState(
-                savedViewState.getParcelable(LAYOUT_MANAGER)
-        )
+        recycler.layoutManager.onRestoreInstanceState(savedViewState.getParcelable(LAYOUT_MANAGER))
     }
 
     override fun onDestroyView(view: View) {
