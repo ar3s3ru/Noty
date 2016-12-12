@@ -17,6 +17,7 @@ import com.danilocianfrone.noty.dagger.PageControllerScope
 import com.danilocianfrone.noty.models.Priority
 import com.danilocianfrone.noty.presenters.NotePresenter
 import com.danilocianfrone.noty.views.recyclers.NoteListAdapter
+import com.squareup.leakcanary.RefWatcher
 import javax.inject.Inject
 
 // TODO: implement save controller state
@@ -33,14 +34,11 @@ class PageController(args: Bundle) : BaseController(args) {
 
     @BindView(R.id.controller_page_recycler) lateinit var recycler: RecyclerView
 
-    @Inject @AppScope
-    lateinit var presenter: NotePresenter
+    @Inject @AppScope lateinit var refWatcher: RefWatcher
+    @Inject @AppScope lateinit var presenter: NotePresenter
 
-    @Inject @PageControllerScope
-    lateinit var adapter: NoteListAdapter
-
-    @Inject @PageControllerScope
-    lateinit var priority: Priority
+    @Inject @PageControllerScope lateinit var adapter: NoteListAdapter
+    @Inject @PageControllerScope lateinit var priority: Priority
 
     private val TAG by lazy { "PageController_${priority.name}" }
     private val objectGraph by lazy {
@@ -73,14 +71,21 @@ class PageController(args: Bundle) : BaseController(args) {
         presenter.ReleaseView(adapter)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveViewState(view: View, outState: Bundle) {
+        super.onSaveViewState(view, outState)
         outState.putParcelable(LAYOUT_MANAGER, recycler.layoutManager.onSaveInstanceState())
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
+        super.onRestoreViewState(view, savedViewState)
         recycler.layoutManager.onRestoreInstanceState(
-                savedInstanceState.getParcelable(LAYOUT_MANAGER)
+                savedViewState.getParcelable(LAYOUT_MANAGER)
         )
+    }
+
+    override fun onDestroyView(view: View) {
+        super.onDestroyView(view)
+        refWatcher.watch(this)
     }
 
     companion object {

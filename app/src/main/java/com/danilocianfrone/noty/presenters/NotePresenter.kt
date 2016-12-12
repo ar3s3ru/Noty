@@ -6,6 +6,7 @@ import com.danilocianfrone.noty.models.Priority
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
+import java.lang.ref.WeakReference
 
 /**
  * Presenter used for all the views that needs Note as their models.
@@ -13,7 +14,7 @@ import io.realm.Sort
 class NotePresenter(private val realm: Realm) : AbstractPresenter<MutableList<Note>>() {
 
     override fun onBeforeTakeView(view: Presenter.Presentable<MutableList<Note>>) {
-        if (view is NotePresentable<*>) { view.presenter = this }
+        if (view is NotePresentable<*>) { view.presenter = WeakReference(this) }
     }
 
     override fun ReleaseView(view: Presenter.Presentable<MutableList<Note>>) {
@@ -33,7 +34,7 @@ class NotePresenter(private val realm: Realm) : AbstractPresenter<MutableList<No
     override fun publish(view: Presenter.Presentable<MutableList<Note>>) {
         // Casting works because onDeliver() is using Realm, lol
         val future = onDeliver(view) as RealmResults<Note>
-        future.addChangeListener{
+        future.addChangeListener {
             if (it != null) { view.onUpdateView(it) }
             else { view.onUpdateError(Exception("No new shit to show")) }   // TODO: change this
         }

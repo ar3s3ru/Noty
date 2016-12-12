@@ -13,7 +13,9 @@ import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.AppScope
 import com.danilocianfrone.noty.models.Note
 import com.danilocianfrone.noty.models.Priority
+import com.squareup.leakcanary.RefWatcher
 import io.realm.Realm
+import java.util.*
 import javax.inject.Inject
 
 class NoteCreationController :
@@ -23,6 +25,7 @@ class NoteCreationController :
 
     // App stuff
     @Inject @AppScope lateinit var realm: Realm
+    @Inject @AppScope lateinit var refWatcher: RefWatcher
 
     @BindView(R.id.controller_creation_content)
     lateinit var content: EditText
@@ -63,8 +66,15 @@ class NoteCreationController :
         }
     }
 
+    override fun onDestroyView(view: View) {
+        super.onDestroyView(view)
+        refWatcher.watch(this)
+    }
+
     override fun execute(realm: Realm) {
-        val new = realm.createObject(Note::class.java)
+        val date = Date()
+        val new  = realm.createObject(Note::class.java, date.time)
+        new.creation = date
         new.content  = content.text.toString()
         new.priority = fromGroupToPriority()
     }

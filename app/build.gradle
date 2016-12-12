@@ -52,6 +52,10 @@ dependencies {
     kapt 'com.jakewharton:butterknife-compiler:8.4.0'
     // rxKotlin
     compile 'io.reactivex.rxjava2:rxjava:2.0.2'
+    // LeakCanary
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 }
 repositories {
     mavenCentral()

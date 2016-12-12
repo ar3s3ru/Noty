@@ -20,6 +20,7 @@ class NoteListAdapter(priority: Priority)
     : NotePresentable<NoteListAdapter.Companion.ViewHolder>(priority) {
 
     private var dataset: MutableList<Note>? = null
+    private val TAG: String = "NoteListAdapter_$priority"
 
     fun notifyInsertion(data: Note): Unit = when (dataset == null) {
         true  -> notifyUpdate()
@@ -29,14 +30,21 @@ class NoteListAdapter(priority: Priority)
         }
     }
 
+    override fun notifyUpdate() {
+        Log.i(TAG, "notifying update")
+        super.notifyUpdate()
+    }
+
     override fun onAttach() {
         if (dataset == null) { notifyUpdate() }
     }
 
     override fun onUpdateView(data: MutableList<Note>) {
-        dataset?.let { notifyItemRangeRemoved(0, it.count()) }
-        dataset = data
-        notifyItemRangeChanged(0, dataset!!.count())
+        if (data.size > 0) {
+            dataset?.let { notifyItemRangeRemoved(0, it.count()) }
+            dataset = data
+            notifyItemRangeChanged(0, dataset!!.count())
+        }
     }
 
     override fun onUpdateError(throwable: Throwable) {

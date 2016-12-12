@@ -6,6 +6,7 @@ import com.danilocianfrone.noty.views.controllers.PagerAdapter
 import dagger.Subcomponent
 import dagger.Module
 import dagger.Provides
+import java.lang.ref.WeakReference
 import javax.inject.Scope
 
 /**
@@ -17,11 +18,13 @@ import javax.inject.Scope
  *
  */
 @Module(subcomponents = arrayOf(PageControllerComponent::class))
-class ListControllerModule(private val controller: NoteListController) {
+class ListControllerModule(controller: NoteListController) {
+    private val refController =  WeakReference<NoteListController>(controller)
+
     @Provides @NoteControllerScope fun providePageControllers(): Array<PageController> =
             Array(5, ::PageController)
     @Provides @NoteControllerScope fun providePageAdapter(controllers: Array<PageController>) =
-            PagerAdapter(controller, true, controllers)
+            PagerAdapter(refController.get(), false, controllers)
 }
 
 @NoteControllerScope

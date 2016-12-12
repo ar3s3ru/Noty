@@ -1,6 +1,7 @@
 package com.danilocianfrone.noty.presenters
 
 import android.support.v7.widget.RecyclerView
+import java.lang.ref.WeakReference
 
 interface Presenter<out T> {
     fun TakeView(view: Presenter.Presentable<T>)
@@ -37,10 +38,10 @@ abstract class AbstractPresenter<out T> : Presenter<T> {
         abstract class RecyclerPresentable<T, VH : RecyclerView.ViewHolder>
             : Presenter.Presentable<T>, RecyclerView.Adapter<VH>() {
 
-            internal var presenter: AbstractPresenter<T>? = null
+            internal var presenter: WeakReference<AbstractPresenter<T>>? = null
 
             override fun notifyUpdate() {
-                presenter?.publish(this)
+                presenter?.get()?.publish(this)
             }
         }
     }

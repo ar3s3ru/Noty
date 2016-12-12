@@ -1,5 +1,6 @@
 package com.danilocianfrone.noty.dagger
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
@@ -9,6 +10,8 @@ import com.danilocianfrone.noty.models.RealmModule
 import com.danilocianfrone.noty.presenters.NotePresenter
 import com.danilocianfrone.noty.views.MainActivity
 import com.danilocianfrone.noty.views.controllers.NoteCreationController
+import com.squareup.leakcanary.LeakCanary
+import com.squareup.leakcanary.RefWatcher
 
 import dagger.Component
 import dagger.Module
@@ -31,26 +34,26 @@ import javax.inject.Scope
  * Used to provide dependencies within the whole application.
  */
 @Module(subcomponents = arrayOf(NoteActivityComponent::class))
-class AppModule(private val applicationContext: Context) {
+class AppModule(private val application: Application) {
     /**
      * Provide the application {@link android.content.Context} to the other subcomponents
      * @return {@link com.danilocianfrone.noty.Noty} {@link android.content.Context} instance
      */
-    @Provides @AppScope fun provideAppContext(): Context = applicationContext
+    @Provides @AppScope fun provideAppContext(): Context = application
 
     /**
      * Provide the application-level {@link android.content.SharedPreferences} instance.
      * @return Application {@link android.content.SharedPreferences} instance
      */
     @Provides @AppScope fun provideAppPrefs(): SharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(applicationContext)
+            PreferenceManager.getDefaultSharedPreferences(application)
 
     /**
      *
      */
     @Provides @AppScope fun provideRealmInstance(): Realm {
         // Setup Realm
-        Realm.init(applicationContext)  // Uses the applicationContext
+        Realm.init(application)  // Uses the application
         Realm.setDefaultConfiguration(
                 RealmConfiguration.Builder()
                         .name(Names.REALM_NAME)
@@ -67,6 +70,9 @@ class AppModule(private val applicationContext: Context) {
      */
     @Provides @AppScope fun provideNotePresenter(realm: Realm): NotePresenter =
             NotePresenter(realm)
+
+    @Provides @AppScope fun provideRefWatcher(): RefWatcher =
+            LeakCanary.install(application)
 }
 
 /**

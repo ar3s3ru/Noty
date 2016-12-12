@@ -8,8 +8,11 @@ import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.danilocianfrone.noty.R
+import com.danilocianfrone.noty.dagger.ActivityScope
+import com.danilocianfrone.noty.dagger.AppScope
 import com.danilocianfrone.noty.dagger.NoteActivityModule
 import com.danilocianfrone.noty.views.controllers.NoteListController
+import com.squareup.leakcanary.RefWatcher
 import javax.inject.Inject
 
 class NoteActivity : BaseActivity() {
@@ -17,7 +20,8 @@ class NoteActivity : BaseActivity() {
     @BindView(R.id.activity_note_root) lateinit var noteActivityRoot: ViewGroup
 
     private lateinit var conductorRouter: Router
-    @Inject lateinit var listController: NoteListController
+    @Inject @ActivityScope lateinit var listController: NoteListController
+    @Inject @AppScope lateinit var refWatcher: RefWatcher
 
     // Dagger object graph
     internal val objectGraph by lazy {
@@ -53,6 +57,11 @@ class NoteActivity : BaseActivity() {
         if (!conductorRouter.handleBack()) {
             super.onBackPressed()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        refWatcher.watch(this)  // Spots memory leaks on destroying
     }
 
     companion object {

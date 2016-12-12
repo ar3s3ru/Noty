@@ -8,6 +8,7 @@ import com.danilocianfrone.noty.views.recyclers.NoteListAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
+import java.lang.ref.WeakReference
 
 import javax.inject.Scope
 
@@ -21,7 +22,10 @@ import javax.inject.Scope
  * Module class for {@link com.danilocianfrone.noty.view.controllers.PageController} Dagger component.
  * Provides all the dependencies needed within the PageController class.
  */
-@Module class PageControllerModule(private val controller: PageController) {
+@Module class PageControllerModule(controller: PageController) {
+
+    private val refController = WeakReference<PageController>(controller)
+
     /**
      * Provides the Priority value that identifies the
      * {@link com.danilocianfrone.noty.view.controllers.PageController} instance.
@@ -30,7 +34,7 @@ import javax.inject.Scope
      */
     @Provides @PageControllerScope fun providePriority() =
             // Should be always args != null
-            Priority.FromValue(controller.args!!.getInt(Names.PRIORITY))
+            Priority.FromValue(refController.get().args!!.getInt(Names.PRIORITY))
 
     /**
      * Provides the {@link com.danilocianfrone.noty.view.recyclers.NoteListAdapter} used with the

@@ -19,12 +19,14 @@ import java.util.*
 @RealmClass
 open class Note : RealmObject() {
 
+    @PrimaryKey var id: Long = -1
+
     @Index private var priorityVal: Int = Priority.MEDIUM.Value()         // Default Value to normal
     @Ignore var priority: Priority      = Priority.FromValue(priorityVal) // This is ignorated from Realm
         // When is set a new Value, update priorityVal Value as well
         set(value) { priorityVal = value.Value() }
 
-    var content:  String    = "<note content>"
-    var creation: Date      = Date()  // Actual date
+    lateinit var content:  String
+    lateinit var creation: Date       // Actual date
     var attach:   Document? = null    // Document can be nullable, 'cause it's not mandatory
 }

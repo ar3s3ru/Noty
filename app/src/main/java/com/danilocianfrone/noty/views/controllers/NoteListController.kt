@@ -1,11 +1,9 @@
 package com.danilocianfrone.noty.views.controllers
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,10 +17,12 @@ import com.bluelinelabs.conductor.support.ControllerPagerAdapter
 
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.ActivityScope
+import com.danilocianfrone.noty.dagger.AppScope
 import com.danilocianfrone.noty.dagger.ListControllerModule
 import com.danilocianfrone.noty.dagger.NoteControllerScope
 import com.danilocianfrone.noty.models.Priority
 import com.danilocianfrone.noty.views.NoteActivity
+import com.squareup.leakcanary.RefWatcher
 
 import javax.inject.Inject
 
@@ -37,6 +37,7 @@ class NoteListController : BaseController(), View.OnClickListener {
     @BindView(R.id.controller_note_fab)
     lateinit var fabNew: FloatingActionButton
 
+    @Inject @AppScope lateinit var refWatcher: RefWatcher
     @Inject @ActivityScope lateinit var noteCreation: NoteCreationController
     @Inject @NoteControllerScope lateinit var pagerAdapter: PagerAdapter
 
@@ -66,11 +67,11 @@ class NoteListController : BaseController(), View.OnClickListener {
 
     override fun onSaveViewState(view: View, outState: Bundle) {
         outState.putParcelable(PAGER, pager.onSaveInstanceState())
-        outState.putInt(TAB_LAOUT, tabLayout.selectedTabPosition)
+        outState.putInt(TAB_LAYOUT, tabLayout.selectedTabPosition)
     }
 
     override fun onRestoreViewState(view: View, savedViewState: Bundle) {
-        tabLayout.getTabAt(savedViewState.getInt(TAB_LAOUT))?.select()
+        tabLayout.getTabAt(savedViewState.getInt(TAB_LAYOUT))?.select()
         pager.onRestoreInstanceState(
                 savedViewState.getParcelable(PAGER)
         )
@@ -87,6 +88,11 @@ class NoteListController : BaseController(), View.OnClickListener {
         }
     }
 
+    override fun onDestroyView(view: View) {
+        super.onDestroyView(view)
+        refWatcher.watch(this)      // Spots memory leaks on destroy
+    }
+
     override fun handleBack(): Boolean {
         return super.handleBack()
     }
@@ -94,7 +100,7 @@ class NoteListController : BaseController(), View.OnClickListener {
     companion object {
         private const val TAG = "NoteListController"
         private const val PAGER = "$TAG.Pager"
-        private const val TAB_LAOUT = "$TAG.TabLayout"
+        private const val TAB_LAYOUT = "$TAG.TabLayout"
     }
 }
 

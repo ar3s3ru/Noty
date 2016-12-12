@@ -8,6 +8,7 @@ import com.danilocianfrone.noty.views.controllers.NoteListController
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
+import java.lang.ref.WeakReference
 import javax.inject.Scope
 
 /**
@@ -19,7 +20,9 @@ import javax.inject.Scope
  *
  */
 @Module(subcomponents = arrayOf(NoteControllerComponent::class))
-class NoteActivityModule(private val activity: NoteActivity) {
+class NoteActivityModule(activity: NoteActivity) {
+    private val refActivity = WeakReference<NoteActivity>(activity)
+
     @Provides @ActivityScope fun provideDocumentController()     = DocumentController()
     @Provides @ActivityScope fun provideFastCreationController() = FastCreationController()
     @Provides @ActivityScope fun provideNoteCreationController() = NoteCreationController()
