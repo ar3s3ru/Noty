@@ -64,13 +64,26 @@ class PageController(args: Bundle) : BaseController(args) {
 
     override fun onAttach(view: View) {
         super.onAttach(view)
-        Log.i(TAG, "Taking view")
-        presenter.TakeView(adapter) // Take adapter as presentable view
+        // Take adapter as presentable view
+        presenter.TakeView(adapter)
     }
 
     override fun onDetach(view: View) {
         super.onDetach(view)
-        Log.i(TAG, "Releasing view")
         presenter.ReleaseView(adapter)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(LAYOUT_MANAGER, recycler.layoutManager.onSaveInstanceState())
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        recycler.layoutManager.onRestoreInstanceState(
+                savedInstanceState.getParcelable(LAYOUT_MANAGER)
+        )
+    }
+
+    companion object {
+        private const val LAYOUT_MANAGER = "PageController.LayoutManager"
     }
 }

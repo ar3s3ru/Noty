@@ -4,15 +4,14 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import butterknife.BindView
+
+import io.realm.Realm
+import javax.inject.Inject
+
 import com.danilocianfrone.noty.Names
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.AppScope
 import com.danilocianfrone.noty.doWithSharedPrefsEditor
-import com.danilocianfrone.noty.models.Note
-import com.danilocianfrone.noty.models.Priority
-import io.realm.Realm
-import javax.inject.Inject
 
 /**
  * Initial activity, started when a new App instance is started.
@@ -40,9 +39,10 @@ class MainActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
 
-         when (prefs.getBoolean(Names.FIRST_BOOT, true)) {
-            true  -> startActivity(Intent(this, NoteActivity::class.java))  // Not first boot
-            false -> {                                                      // First boot
+        Log.i(TAG, "Starting MainActivity")
+        when (prefs.getBoolean(Names.FIRST_BOOT, true)) {
+            false -> startActivity(Intent(this, NoteActivity::class.java))  // Not first boot
+            true  -> {                                                      // First boot
                 doWithSharedPrefsEditor(prefs, { it.putBoolean(Names.FIRST_BOOT, false) })
                 startActivity(Intent(this, TutorialActivity::class.java))   // Go to tutorial
             }

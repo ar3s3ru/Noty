@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/controller_creation_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:minLines="10"
+        android:maxLines="10"
+        android:id="@+id/controller_creation_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/controller_creation_priorities"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/controller_creation_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:text="Very High"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/controller_creation_veryhigh"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="High"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/controller_creation_high"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:id="@+id/controller_creation_medium"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Low"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/controller_creation_low"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Very Low"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/controller_creation_verylow"
+            android:layout_weight="1" />
+    </RadioGroup>
+
+    <Button
+        android:text="Ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/controller_creation_ok"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/controller_creation_priorities"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:text="Abort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/controller_creation_abort"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/controller_creation_priorities"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

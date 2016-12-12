@@ -3,6 +3,7 @@ package com.danilocianfrone.noty.models
 import io.realm.RealmObject
 import io.realm.annotations.Ignore
 import io.realm.annotations.Index
+import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
 import java.util.*
 
@@ -17,6 +18,7 @@ import java.util.*
  */
 @RealmClass
 open class Note : RealmObject() {
+
     @Index private var priorityVal: Int = Priority.MEDIUM.Value()         // Default Value to normal
     @Ignore var priority: Priority      = Priority.FromValue(priorityVal) // This is ignorated from Realm
         // When is set a new Value, update priorityVal Value as well

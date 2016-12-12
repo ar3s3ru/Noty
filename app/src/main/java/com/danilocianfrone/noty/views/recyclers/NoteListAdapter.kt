@@ -17,11 +17,23 @@ import com.danilocianfrone.noty.models.Priority
 import com.danilocianfrone.noty.presenters.NotePresentable
 
 class NoteListAdapter(priority: Priority)
-    : NotePresentable<NoteListAdapter.Companion.ViewHolder>(priority), View.OnClickListener {
+    : NotePresentable<NoteListAdapter.Companion.ViewHolder>(priority) {
 
-    private var dataset: List<Note>? = null
+    private var dataset: MutableList<Note>? = null
 
-    override fun onUpdateView(data: List<Note>) {
+    fun notifyInsertion(data: Note): Unit = when (dataset == null) {
+        true  -> notifyUpdate()
+        false -> {
+            dataset!!.add(0, data)
+            notifyItemInserted(0)
+        }
+    }
+
+    override fun onAttach() {
+        if (dataset == null) { notifyUpdate() }
+    }
+
+    override fun onUpdateView(data: MutableList<Note>) {
         dataset?.let { notifyItemRangeRemoved(0, it.count()) }
         dataset = data
         notifyItemRangeChanged(0, dataset!!.count())
@@ -54,22 +66,11 @@ class NoteListAdapter(priority: Priority)
                 holder.unbinder = ButterKnife.bind(holder, holder.itemView)
             }
 
-            Log.i(
-                    "NoteListAdapter",
-                    "Object ${item.priority}"
-            )
-
             holder.layout.setBackgroundResource(item.priority.ColorBody())
             holder.content.text  = item.content
             holder.creation.text = item.creation.toString()
             holder.creation.setBackgroundResource(item.priority.ColorTop())
-            holder.itemView.setOnClickListener(this)
         }
-    }
-
-    override fun onClick(p0: View?) {
-        Log.i("NoteListAdapter", "Clicked for updating")
-        notifyUpdate()
     }
 
     companion object {

@@ -1,6 +1,7 @@
 package com.danilocianfrone.noty.views
 
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import butterknife.BindView
 import com.bluelinelabs.conductor.Conductor
@@ -14,8 +15,8 @@ import javax.inject.Inject
 class NoteActivity : BaseActivity() {
 
     @BindView(R.id.activity_note_root) lateinit var noteActivityRoot: ViewGroup
-    private lateinit var conductorRouter: Router
 
+    private lateinit var conductorRouter: Router
     @Inject lateinit var listController: NoteListController
 
     // Dagger object graph
@@ -34,12 +35,24 @@ class NoteActivity : BaseActivity() {
         // Attach Conductor root
         conductorRouter = Conductor.attachRouter(this, noteActivityRoot, savedInstanceState)
         if (!conductorRouter.hasRootController()) {
-            conductorRouter.setRoot(RouterTransaction.with(NoteListController()))
+            conductorRouter.setRoot(RouterTransaction.with(listController))
         }
     }
 
     override fun onSetContentView() {
         setContentView(R.layout.activity_note)
+    }
+
+    override fun onBackPressed() {
+//        // TODO: refactor this
+//        Log.i(TAG, "Backstack size is ${conductorRouter.backstackSize}")
+//        if (conductorRouter.backstackSize == 1 || !conductorRouter.handleBack()) {
+//            super.onBackPressed()
+//        }
+        Log.i(TAG, "handleBack()")
+        if (!conductorRouter.handleBack()) {
+            super.onBackPressed()
+        }
     }
 
     companion object {

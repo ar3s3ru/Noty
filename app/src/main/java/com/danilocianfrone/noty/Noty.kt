@@ -25,15 +25,6 @@ class Noty : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // Setup Realm
-        Realm.init(this)
-        Realm.setDefaultConfiguration(
-                RealmConfiguration.Builder()
-                        .name(Names.REALM_NAME)
-                        .modules(Realm.getDefaultModule(), RealmModule())
-                        .build()
-        )
-
         // Inject object graph
         objectGraph.inject(this)
     }
