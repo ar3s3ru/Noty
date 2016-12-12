@@ -44,7 +44,7 @@ class NoteCreationController :
     }
 
     override fun handleBack(): Boolean {
-        // Pop this shit out
+        // Pop this shit out!
         return router.popController(this)
     }
 
