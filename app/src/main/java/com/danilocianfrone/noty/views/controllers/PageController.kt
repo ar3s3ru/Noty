@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import butterknife.BindView
 import com.danilocianfrone.noty.BundleBuilder
-import com.danilocianfrone.noty.Names
+import com.danilocianfrone.noty.singleton.Names
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.AppScope
 import com.danilocianfrone.noty.dagger.PageControllerModule
@@ -26,12 +26,6 @@ import javax.inject.Inject
 //       the Presenter and its takeView
 class PageController(args: Bundle) : BaseController(args) {
 
-    constructor(priorityValue: Int) : this(
-            BundleBuilder(Bundle())
-                    .putInt(Names.PRIORITY, priorityValue)
-                    .build()
-    )
-
     @BindView(R.id.controller_page_recycler) lateinit var recycler: RecyclerView
 
     @Inject @AppScope lateinit var refWatcher: RefWatcher
@@ -42,7 +36,7 @@ class PageController(args: Bundle) : BaseController(args) {
 
     private val TAG by lazy { "PageController_${priority.name}" }
     private val objectGraph by lazy {
-        (parentController as NoteListController).objectGraph.plusPageController()
+        notyApplication.objectGraph.plusPageControllerComponent()
                 .withModule(PageControllerModule(this))
                 .build()
     }
@@ -88,5 +82,14 @@ class PageController(args: Bundle) : BaseController(args) {
 
     companion object {
         private const val LAYOUT_MANAGER = "PageController.LayoutManager"
+
+        fun with(priority: Priority): PageController = with(priority.Value())
+
+        fun with(priorityValue: Int): PageController =
+            PageController(
+                    BundleBuilder(Bundle())
+                            .putInt(Names.PRIORITY, priorityValue)
+                            .build()
+            )
     }
 }

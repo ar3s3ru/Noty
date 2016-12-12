@@ -1,6 +1,6 @@
 package com.danilocianfrone.noty.dagger
 
-import com.danilocianfrone.noty.Names
+import com.danilocianfrone.noty.singleton.Names
 import com.danilocianfrone.noty.models.Priority
 import com.danilocianfrone.noty.views.controllers.PageController
 import com.danilocianfrone.noty.views.recyclers.NoteListAdapter

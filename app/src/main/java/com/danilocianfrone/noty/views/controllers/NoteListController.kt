@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import butterknife.BindView
+import butterknife.OnClick
 
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
@@ -18,16 +19,13 @@ import com.bluelinelabs.conductor.support.ControllerPagerAdapter
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.*
 import com.danilocianfrone.noty.models.Priority
+import com.danilocianfrone.noty.singleton.ControllerFactory
 import com.danilocianfrone.noty.views.NoteActivity
 import com.squareup.leakcanary.RefWatcher
 
 import javax.inject.Inject
 
-class NoteListController : BaseController(), View.OnClickListener {
-
-    interface Listener {
-        fun onAddButtonClick()
-    }
+class NoteListController : BaseController() {
 
     @BindView(R.id.controller_note_pager)
     lateinit var pager: ViewPager
@@ -39,38 +37,26 @@ class NoteListController : BaseController(), View.OnClickListener {
     lateinit var fabNew: FloatingActionButton
 
     @Inject @AppScope lateinit var refWatcher: RefWatcher
-    @Inject @NoteControllerScope lateinit var pagerAdapter: PagerAdapter
-
-    // Dagger object graph
-    private var injected = false
-    internal val objectGraph by lazy {
-        (activity as NoteActivity).objectGraph.plusNoteController()
-                .withModule(ListControllerModule(this))
-                .build()
-    }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View =
-        inflater.inflate(R.layout.controller_note_list, container)
+        inflater.inflate(R.layout.controller_note_list_constraint, container, false)
 
     override fun onViewBound(view: View) {
         super.onViewBound(view)
 
         // Inject object graph
-        injectEventually(objectGraph)
+        notyApplication.objectGraph.plus(this)
 
         // Setup pager and tab layout
-        pager.adapter = pagerAdapter
-        tabLayout.setupWithViewPager(pager)
+        pager.adapter = PagerAdapter(this, true, arrayOf(
+                PageController.Companion.with(Priority.VERY_HIGH),
+                PageController.Companion.with(Priority.HIGH),
+                PageController.Companion.with(Priority.MEDIUM),
+                PageController.Companion.with(Priority.LOW),
+                PageController.Companion.with(Priority.VERY_LOW)
+        ))
 
-        // Add onClick callback
-        fabNew.setOnClickListener(this)
-    }
-
-    override fun onClick(view: View) {
-        if (view == fabNew) {
-            // Shows up NoteCreation (NoteActivity MUST implement Listener)
-            (activity as Listener).onAddButtonClick()
-        }
+        tabLayout.setupWithViewPager(pager, true)
     }
 
     override fun onDestroyView(view: View) {
@@ -88,11 +74,12 @@ class NoteListController : BaseController(), View.OnClickListener {
         pager.onRestoreInstanceState(savedViewState.getParcelable(PAGER))
     }
 
-    private fun injectEventually(objectGraph: NoteControllerComponent) {
-        if (!injected) {
-            objectGraph.inject(this)
-            injected = true
-        }
+    @OnClick(R.id.controller_note_fab) fun fabClicked() {
+        router.pushController(
+                RouterTransaction.with(ControllerFactory.provideNoteCreationController())
+                        .popChangeHandler(FadeChangeHandler())
+                        .pushChangeHandler(FadeChangeHandler())
+        )
     }
 
     companion object {
@@ -109,8 +96,10 @@ class PagerAdapter(controller: NoteListController,
 
     override fun getItem(position: Int): Controller =
             pages[position]
+
     override fun getCount(): Int =
             pages.size
+
     override fun getPageTitle(position: Int): CharSequence =
             "${Priority.FromValue(position).String()} Priority"
 }

@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioGroup
 import butterknife.BindView
+import butterknife.OnClick
 
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.AppScope
@@ -20,8 +21,7 @@ import javax.inject.Inject
 
 class NoteCreationController :
         BaseController(),
-        Realm.Transaction,
-        View.OnClickListener {
+        Realm.Transaction {
 
     // App stuff
     @Inject @AppScope lateinit var realm: Realm
@@ -33,12 +33,6 @@ class NoteCreationController :
     @BindView(R.id.controller_creation_priorities)
     lateinit var group: RadioGroup
 
-    @BindView(R.id.controller_creation_ok)
-    lateinit var okButton: Button
-
-    @BindView(R.id.controller_creation_abort)
-    lateinit var abortButton: Button
-
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View =
             inflater.inflate(R.layout.controller_note_creation, container, false)
 
@@ -46,24 +40,12 @@ class NoteCreationController :
         super.onViewBound(view)
 
         // Inject application object graph
-        notyApplication.objectGraph.inject(this)
-
-        // Set onClick callbacks
-        okButton.setOnClickListener(this)
-        abortButton.setOnClickListener(this)
+        notyApplication.objectGraph.plus(this)
     }
 
     override fun handleBack(): Boolean {
-        Log.i(TAG, "handleBack()")
+        // Pop this shit out
         return router.popController(this)
-    }
-
-    override fun onClick(p0: View) {
-        when (p0) {
-            okButton    -> { realm.executeTransactionAsync(this); handleBack() }
-            abortButton -> { handleBack() }
-            else        -> return
-        }
     }
 
     override fun onDestroyView(view: View) {
@@ -77,6 +59,20 @@ class NoteCreationController :
         new.creation = date
         new.content  = content.text.toString()
         new.priority = fromGroupToPriority()
+    }
+
+    /**
+     * Execute abort Button onClick handling.
+     * Specifically, it acts like a back navigation button.
+     */
+    @OnClick(R.id.controller_creation_abort) fun abortButton() { handleBack() }
+
+    /**
+     * Execute ok Button onClick handling.
+     * Execute a Realm write async transaction, then navigates back to NoteListController.
+     */
+    @OnClick(R.id.controller_creation_ok) fun okButton() {
+        realm.executeTransactionAsync(this); handleBack()
     }
 
     private fun fromGroupToPriority(): Priority =

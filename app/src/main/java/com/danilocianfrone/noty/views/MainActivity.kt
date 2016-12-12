@@ -8,7 +8,7 @@ import android.util.Log
 import io.realm.Realm
 import javax.inject.Inject
 
-import com.danilocianfrone.noty.Names
+import com.danilocianfrone.noty.singleton.Names
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.AppScope
 import com.danilocianfrone.noty.doWithSharedPrefsEditor
@@ -33,7 +33,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         // Inject object graph
-        notyApplication.objectGraph.inject(this)
+        notyApplication.objectGraph.plus(this)
     }
 
     override fun onStart() {

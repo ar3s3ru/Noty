@@ -4,12 +4,14 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.danilocianfrone.noty.Names
+import com.danilocianfrone.noty.singleton.Names
 import com.danilocianfrone.noty.Noty
 import com.danilocianfrone.noty.models.RealmModule
 import com.danilocianfrone.noty.presenters.NotePresenter
 import com.danilocianfrone.noty.views.MainActivity
+import com.danilocianfrone.noty.views.NoteActivity
 import com.danilocianfrone.noty.views.controllers.NoteCreationController
+import com.danilocianfrone.noty.views.controllers.NoteListController
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 
@@ -33,7 +35,7 @@ import javax.inject.Scope
  * Module class for the {@link com.danilocianfrone.noty.Noty} Dagger component.
  * Used to provide dependencies within the whole application.
  */
-@Module(subcomponents = arrayOf(NoteActivityComponent::class))
+@Module(subcomponents = arrayOf(PageControllerComponent::class))
 class AppModule(private val application: Application) {
     /**
      * Provide the application {@link android.content.Context} to the other subcomponents
@@ -90,8 +92,10 @@ class AppModule(private val application: Application) {
 @Component(modules = arrayOf(AppModule::class, PreferencesModule::class))
 interface AppComponent {
     fun inject(application: Noty)
-    fun inject(activity: MainActivity)
-    fun inject(controller: NoteCreationController)
+    fun plus(activity: MainActivity)
+    fun plus(activity: NoteActivity)
+    fun plus(controller: NoteListController)
+    fun plus(controller: NoteCreationController)
 
-    fun plusNoteActivity(): NoteActivityComponent.Builder
+    fun plusPageControllerComponent(): PageControllerComponent.Builder
 }

@@ -1,4 +1,4 @@
-package com.danilocianfrone.noty
+package com.danilocianfrone.noty.singleton
 
 /**
  * Static class that contains all the constant strings used throughout the application.
