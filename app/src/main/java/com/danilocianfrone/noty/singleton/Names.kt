@@ -3,7 +3,7 @@ package com.danilocianfrone.noty.singleton
 /**
  * Static class that contains all the constant strings used throughout the application.
  */
-object Names {
+internal object Names {
     // SharedPrefs first boot key
     const val FIRST_BOOT = "first_boot"
     // Priority key for Controller creations

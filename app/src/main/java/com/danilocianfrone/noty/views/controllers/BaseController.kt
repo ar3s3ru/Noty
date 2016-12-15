@@ -10,7 +10,11 @@ import com.bluelinelabs.conductor.Controller
 import com.danilocianfrone.noty.Noty
 
 /**
+ * Base [Controller] class used for concrete application-level [Controller] classes.
  *
+ * It includes [ButterKnife] injection, [View] inflating through [BaseController.inflateView],
+ * post [View] inflating setup with [BaseController.onViewBind] and a [Noty] application reference
+ * for object graph building.
  */
 abstract class BaseController : Controller {
 
@@ -21,14 +25,20 @@ abstract class BaseController : Controller {
     protected val notyApplication: Noty by lazy { applicationContext as Noty }
 
     /**
+     * Used to do [BaseController] [View] inflating.
      *
+     * @param inflater [LayoutInflater] to use to do [View] inflating
+     * @param container [ViewGroup] to which attach the inflated [View]
+     * @return The inflated [View]
      */
     abstract protected fun inflateView(inflater: LayoutInflater, container: ViewGroup): View
 
     /**
+     * Used to do post-inflation [View] setup.
      *
+     * @param view Inflated view
      */
-    open protected fun onViewBound(view: View) {
+    open protected fun onViewBind(view: View) {
         // Do something here...
     }
 
@@ -38,8 +48,8 @@ abstract class BaseController : Controller {
         // ButterKnife binder
         unbinder = ButterKnife.bind(this, view)
         // Do something with the view
-        onViewBound(view)
-
+        onViewBind(view)
+        // Return the view created
         return view
     }
 

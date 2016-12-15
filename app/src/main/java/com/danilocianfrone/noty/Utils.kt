@@ -22,11 +22,7 @@ internal inline fun doWithSharedPrefsEditor(prefs: SharedPreferences,
  *
  * @param bundle: Bundle from which apply building
  */
-internal class BundleBuilder(private val bundle: Bundle) {
-    fun putInt(key: String, value: Int): BundleBuilder {
-        bundle.putInt(key, value)
-        return this
-    }
-
-    fun build(): Bundle = bundle
+internal fun Bundle.withInt(key: String, value: Int): Bundle {
+    putInt(key, value)
+    return this
 }

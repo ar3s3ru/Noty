@@ -15,11 +15,20 @@ import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.models.Note
 import com.danilocianfrone.noty.models.Priority
 import com.danilocianfrone.noty.presenters.NotePresentable
+import java.lang.ref.WeakReference
 
-class NoteListAdapter(priority: Priority)
-    : NotePresentable<NoteListAdapter.Companion.ViewHolder>(priority) {
+class NoteListAdapter(listener: Listener, priority: Priority) :
+        NotePresentable<NoteListAdapter.Companion.ViewHolder>(priority),
+        View.OnClickListener{
 
-    private var dataset: MutableList<Note>? = null
+    interface Listener {
+        fun onClickedElement()
+        fun onRefreshed()
+    }
+
+    private var listener: WeakReference<Listener?> = WeakReference(listener)
+    private var dataset:  MutableList<Note>?       = null
+
     private val TAG: String = "NoteListAdapter_$priority"
 
     fun notifyInsertion(data: Note): Unit = when (dataset == null) {
@@ -42,6 +51,8 @@ class NoteListAdapter(priority: Priority)
             dataset = data
             // Notify addition
             notifyItemRangeChanged(0, dataset!!.count())
+            // Notify listener of refreshing
+            listener.get()?.onRefreshed()
         }
     }
 
@@ -76,7 +87,12 @@ class NoteListAdapter(priority: Priority)
             holder.content.text  = item.content
             holder.creation.text = item.creation.toString()
             holder.creation.setBackgroundResource(item.priority.ColorTop())
+            holder.itemView.setOnClickListener(this)
         }
+    }
+
+    override fun onClick(view: View) {
+        listener.get()?.onClickedElement()
     }
 
     companion object {
@@ -86,6 +102,7 @@ class NoteListAdapter(priority: Priority)
         private const val DATASET_FULL  = 1
 
         class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
             @BindView(R.id.adapter_note_view)     lateinit var layout:   LinearLayout
             @BindView(R.id.adapter_note_content)  lateinit var content:  TextView
             @BindView(R.id.adapter_note_creation) lateinit var creation: TextView

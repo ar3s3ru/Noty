@@ -27,6 +27,6 @@ open class Note : RealmObject() {
         set(value) { priorityVal = value.Value() }
 
     lateinit var content:  String
-    lateinit var creation: Date       // Actual date
-    var attach:   Document? = null    // Document can be nullable, 'cause it's not mandatory
+    lateinit var creation: Date     // Actual date
+    var attach: Document? = null    // Document can be nullable, 'cause it's not mandatory
 }

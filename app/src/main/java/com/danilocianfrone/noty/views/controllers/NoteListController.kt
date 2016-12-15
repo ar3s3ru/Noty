@@ -20,32 +20,27 @@ import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.*
 import com.danilocianfrone.noty.models.Priority
 import com.danilocianfrone.noty.singleton.ControllerFactory
-import com.danilocianfrone.noty.views.NoteActivity
 import com.squareup.leakcanary.RefWatcher
+import java.lang.ref.WeakReference
 
 import javax.inject.Inject
 
 class NoteListController : BaseController() {
 
-    @BindView(R.id.controller_note_pager)
-    lateinit var pager: ViewPager
-
-    @BindView(R.id.controller_note_tablayout)
-    lateinit var tabLayout: TabLayout
-
-    @BindView(R.id.controller_note_fab)
-    lateinit var fabNew: FloatingActionButton
+    @BindView(R.id.controller_note_fab)       lateinit var fabNew:    FloatingActionButton
+    @BindView(R.id.controller_note_pager)     lateinit var pager:     ViewPager
+    @BindView(R.id.controller_note_tablayout) lateinit var tabLayout: TabLayout
 
     @Inject @AppScope lateinit var refWatcher: RefWatcher
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View =
         inflater.inflate(R.layout.controller_note_list_constraint, container, false)
 
-    override fun onViewBound(view: View) {
-        super.onViewBound(view)
+    override fun onViewBind(view: View) {
+        super.onViewBind(view)
 
         // Inject object graph
-        notyApplication.objectGraph.plus(this)
+        notyApplication.objectGraph.inject(this)
 
         // Setup pager and tab layout
         pager.adapter = PagerAdapter(this, true, arrayOf(
@@ -56,6 +51,7 @@ class NoteListController : BaseController() {
                 PageController.Companion.with(Priority.VERY_LOW)
         ))
 
+        // Setup the TabLayout with the ViewPager
         tabLayout.setupWithViewPager(pager, true)
     }
 
@@ -76,7 +72,7 @@ class NoteListController : BaseController() {
 
     @OnClick(R.id.controller_note_fab) fun fabClicked() {
         router.pushController(
-                RouterTransaction.with(ControllerFactory.provideNoteCreationController())
+                RouterTransaction.with(ControllerFactory.provideFastCreationController())
                         .popChangeHandler(FadeChangeHandler())
                         .pushChangeHandler(FadeChangeHandler())
         )
@@ -88,17 +84,19 @@ class NoteListController : BaseController() {
     }
 }
 
-class PagerAdapter(controller: NoteListController,
-                   saveControllerState: Boolean,
-                   val pages: Array<PageController>)
-    // --------------------------------------------------------
+class PagerAdapter(controller: NoteListController, saveControllerState: Boolean, pages: Array<PageController>)
+    // SUPERCLASSES //////////////////////////////////////////////////////////////////////////////////////////
     : ControllerPagerAdapter(controller, saveControllerState) {
 
+    // Use an array of WeakReferences to PageController instances to avoid memory leaks
+    private val refsArray =
+            Array<WeakReference<PageController>>(pages.size, { WeakReference(pages[it]) })
+
     override fun getItem(position: Int): Controller =
-            pages[position]
+            refsArray[position].get()
 
     override fun getCount(): Int =
-            pages.size
+            refsArray.size
 
     override fun getPageTitle(position: Int): CharSequence =
             "${Priority.FromValue(position).String()} Priority"

@@ -26,32 +26,35 @@ import javax.inject.Named
 import javax.inject.Scope
 
 /**
- * Scope annotation for {@link com.danilocianfrone.noty.Noty} lifecycle, which is the whole
- * Application lifecycle, indeed.
+ * Scope annotation for [Noty] lifecycle, which is the whole [Application] lifecycle.
  */
 @Scope annotation class AppScope
 
 /**
- * Module class for the {@link com.danilocianfrone.noty.Noty} Dagger component.
+ * Module class for the [Noty] Dagger component.
  * Used to provide dependencies within the whole application.
  */
 @Module(subcomponents = arrayOf(PageControllerComponent::class))
 class AppModule(private val application: Application) {
     /**
-     * Provide the application {@link android.content.Context} to the other subcomponents
-     * @return {@link com.danilocianfrone.noty.Noty} {@link android.content.Context} instance
+     * Provides the application [android.content.Context] to the other subcomponents
+     *
+     * @return [Noty] [android.content.Context] instance
      */
     @Provides @AppScope fun provideAppContext(): Context = application
 
     /**
-     * Provide the application-level {@link android.content.SharedPreferences} instance.
-     * @return Application {@link android.content.SharedPreferences} instance
+     * Provides the application-level [android.content.SharedPreferences] instance.
+     *
+     * @return Application [android.content.SharedPreferences] instance
      */
     @Provides @AppScope fun provideAppPrefs(): SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(application)
 
     /**
+     * Provides a global [Realm] instance throughout the whole [Noty] application.
      *
+     * @return [Noty] application [Realm] instance
      */
     @Provides @AppScope fun provideRealmInstance(): Realm {
         // Setup Realm
@@ -68,34 +71,73 @@ class AppModule(private val application: Application) {
     }
 
     /**
+     * Provides a [NotePresenter] application instance.
      *
+     * @return [NotePresenter] application instance
      */
     @Provides @AppScope fun provideNotePresenter(realm: Realm): NotePresenter =
             NotePresenter(realm)
 
+    /**
+     * Provides a [RefWatcher] application instance, used for memory leaks debugging
+     *
+     * @return [RefWatcher] instance
+     */
     @Provides @AppScope fun provideRefWatcher(): RefWatcher =
             LeakCanary.install(application)
 }
 
 /**
- *
+ * Module for [AppComponent] that provides dependency regarding [SharedPreferences] application
+ * instance.
  */
 @Module class PreferencesModule() {
+
+    /**
+     * Provides the value of first boot flag
+     *
+     * @return true if the [Noty] application is booted for the first time
+     */
     @Provides @Named(Names.FIRST_BOOT) fun provideFirstBootValue(prefs: SharedPreferences) =
             prefs.getBoolean(Names.FIRST_BOOT, true)
 }
 
 /**
- *
+ * Dagger [Noty] application component, used for application-level dependency injection and
+ * subcomponents' object graph building.
  */
 @AppScope
 @Component(modules = arrayOf(AppModule::class, PreferencesModule::class))
 interface AppComponent {
+    /**
+     *
+     */
     fun inject(application: Noty)
-    fun plus(activity: MainActivity)
-    fun plus(activity: NoteActivity)
-    fun plus(controller: NoteListController)
-    fun plus(controller: NoteCreationController)
 
+    /**
+     *
+     */
+    fun inject(activity: MainActivity)
+
+    /**
+     *
+     */
+    fun inject(activity: NoteActivity)
+
+    /**
+     *
+     */
+    fun inject(controller: NoteListController)
+
+    /**
+     *
+     */
+    fun inject(controller: NoteCreationController)
+
+    // SUBCOMPONENTS BUILDING /////////////////////////////////////////////////
+
+    /**
+     *
+     */
     fun plusPageControllerComponent(): PageControllerComponent.Builder
 }

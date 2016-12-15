@@ -1,10 +1,8 @@
 package com.danilocianfrone.noty.views.controllers
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioGroup
 import butterknife.BindView
@@ -36,17 +34,15 @@ class NoteCreationController :
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View =
             inflater.inflate(R.layout.controller_note_creation, container, false)
 
-    override fun onViewBound(view: View) {
-        super.onViewBound(view)
+    override fun onViewBind(view: View) {
+        super.onViewBind(view)
 
         // Inject application object graph
-        notyApplication.objectGraph.plus(this)
+        notyApplication.objectGraph.inject(this)
     }
 
-    override fun handleBack(): Boolean {
-        // Pop this shit out!
-        return router.popController(this)
-    }
+    override fun handleBack(): Boolean =
+            router.popCurrentController()   // Pop this shit out!
 
     override fun onDestroyView(view: View) {
         super.onDestroyView(view)

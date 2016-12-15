@@ -13,13 +13,13 @@ import java.lang.ref.WeakReference
 import javax.inject.Scope
 
 /**
- * Scope annotation for {@link com.danilocianfrone.noty.view.controllers.PageController} lifecycle.
- * Target all the objects annotated with this scope to the lifecycle of the PageController component.
+ * Scope annotation for [PageController] lifecycle.
+ * Target all the objects annotated with this scope to the lifecycle of the [PageControllerComponent].
  */
 @Scope annotation class PageControllerScope
 
 /**
- * Module class for {@link com.danilocianfrone.noty.view.controllers.PageController} Dagger component.
+ * Module class for [PageController] Dagger component.
  * Provides all the dependencies needed within the PageController class.
  */
 @Module class PageControllerModule(controller: PageController) {
@@ -27,33 +27,30 @@ import javax.inject.Scope
     private val refController = WeakReference<PageController>(controller)
 
     /**
-     * Provides the Priority value that identifies the
-     * {@link com.danilocianfrone.noty.view.controllers.PageController} instance.
+     * Provides the [Priority] value that identifies the [PageController] instance.
      *
-     * @return Priority value from {@link com.danilocianfrone.noty.view.controllers.PageController} bundle
+     * @return Priority value from [PageController] bundle
      */
     @Provides @PageControllerScope fun providePriority() =
             // Should be always args != null
+            // N.B. Could be that refController has an expired reference to PageController!
             Priority.FromValue(refController.get().args!!.getInt(Names.PRIORITY))
 
     /**
-     * Provides the {@link com.danilocianfrone.noty.view.recyclers.NoteListAdapter} used with the
-     * {@link com.danilocianfrone.noty.view.controllers.PageController} RecyclerView.
+     * Provides the [NoteListAdapter] used with the [PageController] [android.support.v7.widget.RecyclerView].
      *
-     * @param priority: {@link com.danilocianfrone.noty.models.Priority} value that notes showed
-     *                  by the adapter must have
-     *
-     * @return {@link com.danilocianfrone.noty.view.recyclers.NoteListAdapter} instance
+     * @param priority: [Priority] value that notes showed by the adapter must have
+     * @return [NoteListAdapter] instance
      */
     @Provides @PageControllerScope fun provideNoteListAdapter(priority: Priority) =
-            NoteListAdapter(priority)
+            NoteListAdapter(refController.get(), priority)
 }
 
 /**
- * Dagger2 PageController Component.
+ * Dagger2 [PageController] Component.
  *
- * It's a SubComponent of {@link NoteControllerComponent} (from which is instanced), and its lifecycle
- * is determined by {@link PageControllerScope}
+ * It's a SubComponent of [NoteControllerComponent] (from which is instanced), and its lifecycle
+ * is determined by [PageControllerScope]
  */
 @PageControllerScope
 @Subcomponent(modules = arrayOf(PageControllerModule::class))
@@ -70,14 +67,14 @@ interface PageControllerComponent {
     @Subcomponent.Builder
     interface Builder {
         /**
-         * Uses the {@link PageControllerModule} passed as dependency satisfier.
-         * @param module: {@link PageControllerModule} instance
+         * Uses the [PageControllerModule] passed as dependency satisfier.
+         * @param module: [PageControllerModule}] instance
          */
         fun withModule(module: PageControllerModule): Builder
 
         /**
-         * Builds the {@link PageControllerComponent}, ready to be injected.
-         * @return new {@link PageControllerComponent} instance
+         * Builds the [PageControllerComponent], ready to be injected.
+         * @return new [PageControllerComponent] instance
          */
         fun build(): PageControllerComponent
     }

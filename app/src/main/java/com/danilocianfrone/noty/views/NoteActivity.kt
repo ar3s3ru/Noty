@@ -24,7 +24,7 @@ class NoteActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         // Inject object graph
-        notyApplication.objectGraph.plus(this)
+        notyApplication.objectGraph.inject(this)
 
         // Attach Conductor root
         conductorRouter = Conductor.attachRouter(this, noteActivityRoot, savedInstanceState)

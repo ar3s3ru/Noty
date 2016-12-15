@@ -33,7 +33,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         // Inject object graph
-        notyApplication.objectGraph.plus(this)
+        notyApplication.objectGraph.inject(this)
     }
 
     override fun onStart() {
