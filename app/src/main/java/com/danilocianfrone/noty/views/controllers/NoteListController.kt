@@ -1,33 +1,28 @@
 package com.danilocianfrone.noty.views.controllers
 
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import butterknife.BindView
 import butterknife.OnClick
-
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 import com.bluelinelabs.conductor.support.ControllerPagerAdapter
-
 import com.danilocianfrone.noty.R
-import com.danilocianfrone.noty.dagger.*
+import com.danilocianfrone.noty.dagger.AppScope
 import com.danilocianfrone.noty.models.Priority
 import com.danilocianfrone.noty.singleton.ControllerFactory
+import com.danilocianfrone.noty.views.controllers.paged.PageController
 import com.squareup.leakcanary.RefWatcher
 import java.lang.ref.WeakReference
-
 import javax.inject.Inject
 
 class NoteListController : BaseController() {
 
-    @BindView(R.id.controller_note_fab)       lateinit var fabNew:    FloatingActionButton
     @BindView(R.id.controller_note_pager)     lateinit var pager:     ViewPager
     @BindView(R.id.controller_note_tablayout) lateinit var tabLayout: TabLayout
 
@@ -44,11 +39,11 @@ class NoteListController : BaseController() {
 
         // Setup pager and tab layout
         pager.adapter = PagerAdapter(this, true, arrayOf(
-                PageController.Companion.with(Priority.VERY_HIGH),
-                PageController.Companion.with(Priority.HIGH),
-                PageController.Companion.with(Priority.MEDIUM),
-                PageController.Companion.with(Priority.LOW),
-                PageController.Companion.with(Priority.VERY_LOW)
+                PageController.Factory.with(Priority.VERY_HIGH),
+                PageController.Factory.with(Priority.HIGH),
+                PageController.Factory.with(Priority.MEDIUM),
+                PageController.Factory.with(Priority.LOW),
+                PageController.Factory.with(Priority.VERY_LOW)
         ))
 
         // Setup the TabLayout with the ViewPager
@@ -70,9 +65,9 @@ class NoteListController : BaseController() {
         pager.onRestoreInstanceState(savedViewState.getParcelable(PAGER))
     }
 
-    @OnClick(R.id.controller_note_fab) fun fabClicked() {
+    @OnClick(R.id.controller_note_fab) fun onClickFAB() {
         router.pushController(
-                RouterTransaction.with(ControllerFactory.provideFastCreationController())
+                RouterTransaction.with(FastCreationController.with(pager.currentItem))
                         .popChangeHandler(FadeChangeHandler())
                         .pushChangeHandler(FadeChangeHandler())
         )
@@ -90,10 +85,11 @@ class PagerAdapter(controller: NoteListController, saveControllerState: Boolean,
 
     // Use an array of WeakReferences to PageController instances to avoid memory leaks
     private val refsArray =
-            Array<WeakReference<PageController>>(pages.size, { WeakReference(pages[it]) })
+            pages
+            //Array<WeakReference<PageController>>(pages.size, { WeakReference(pages[it]) })
 
     override fun getItem(position: Int): Controller =
-            refsArray[position].get()
+            refsArray[position]//.get()
 
     override fun getCount(): Int =
             refsArray.size

@@ -1,15 +1,13 @@
 package com.danilocianfrone.noty.dagger
 
-import com.danilocianfrone.noty.singleton.Names
 import com.danilocianfrone.noty.models.Priority
-import com.danilocianfrone.noty.views.controllers.PageController
+import com.danilocianfrone.noty.singleton.Names
+import com.danilocianfrone.noty.views.controllers.paged.PageController
 import com.danilocianfrone.noty.views.recyclers.NoteListAdapter
-
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
 import java.lang.ref.WeakReference
-
 import javax.inject.Scope
 
 /**

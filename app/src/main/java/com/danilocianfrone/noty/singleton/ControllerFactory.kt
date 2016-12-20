@@ -1,7 +1,11 @@
 package com.danilocianfrone.noty.singleton
 
 import com.bluelinelabs.conductor.Controller
-import com.danilocianfrone.noty.views.controllers.*
+import com.danilocianfrone.noty.models.Priority
+import com.danilocianfrone.noty.views.controllers.DocumentController
+import com.danilocianfrone.noty.views.controllers.FastCreationController
+import com.danilocianfrone.noty.views.controllers.NoteCreationController
+import com.danilocianfrone.noty.views.controllers.NoteListController
 
 /**
  * Factory object for [Controller] used throughout the application
@@ -14,13 +18,6 @@ internal object ControllerFactory {
      * @return new [DocumentController] instance
      */
     fun provideDocumentController(): Controller = DocumentController()
-
-    /**
-     * Provides an instance of [FastCreationController]
-     *
-     * @return new [FastCreationController] instance
-     */
-    fun provideFastCreationController(): Controller = FastCreationController()
 
     /**
      * Provides an instance of [NoteCreationController]

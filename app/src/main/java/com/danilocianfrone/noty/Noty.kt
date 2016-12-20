@@ -4,9 +4,6 @@ import android.app.Application
 import com.danilocianfrone.noty.dagger.AppModule
 import com.danilocianfrone.noty.dagger.DaggerAppComponent
 import com.danilocianfrone.noty.dagger.PreferencesModule
-import com.danilocianfrone.noty.models.RealmModule
-import io.realm.Realm
-import io.realm.RealmConfiguration
 
 /**
  * Noty Application class.

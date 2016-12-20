@@ -26,3 +26,10 @@ internal fun Bundle.withInt(key: String, value: Int): Bundle {
     putInt(key, value)
     return this
 }
+
+internal inline fun <T> doOnNullable(data: T?, onNotNull: (T) -> Unit, onNull: () -> Unit) =
+        if (data != null) onNotNull(data) else onNull()
+
+internal inline fun onNull(data: Any?, onNull: () -> Unit) {
+    if (data == null) { onNull() }
+}

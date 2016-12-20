@@ -4,14 +4,12 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-
-import io.realm.Realm
-import javax.inject.Inject
-
-import com.danilocianfrone.noty.singleton.Names
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.AppScope
 import com.danilocianfrone.noty.doWithSharedPrefsEditor
+import com.danilocianfrone.noty.singleton.Names
+import io.realm.Realm
+import javax.inject.Inject
 
 /**
  * Initial activity, started when a new App instance is started.

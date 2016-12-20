@@ -4,24 +4,21 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.danilocianfrone.noty.singleton.Names
 import com.danilocianfrone.noty.Noty
 import com.danilocianfrone.noty.models.RealmModule
 import com.danilocianfrone.noty.presenters.NotePresenter
+import com.danilocianfrone.noty.singleton.Names
 import com.danilocianfrone.noty.views.MainActivity
 import com.danilocianfrone.noty.views.NoteActivity
 import com.danilocianfrone.noty.views.controllers.NoteCreationController
 import com.danilocianfrone.noty.views.controllers.NoteListController
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
-
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-
 import io.realm.Realm
 import io.realm.RealmConfiguration
-
 import javax.inject.Named
 import javax.inject.Scope
 
@@ -34,7 +31,7 @@ import javax.inject.Scope
  * Module class for the [Noty] Dagger component.
  * Used to provide dependencies within the whole application.
  */
-@Module(subcomponents = arrayOf(PageControllerComponent::class))
+@Module(subcomponents = arrayOf(PageControllerComponent::class, FastControllerComponent::class))
 class AppModule(private val application: Application) {
     /**
      * Provides the application [android.content.Context] to the other subcomponents
@@ -140,4 +137,14 @@ interface AppComponent {
      *
      */
     fun plusPageControllerComponent(): PageControllerComponent.Builder
+
+    /**
+     *
+     */
+    fun plusSearchControllerComponent(): SearchControllerComponent.Builder
+
+    /**
+     *
+     */
+    fun plusFastControllerComponent(): FastControllerComponent.Builder
 }
