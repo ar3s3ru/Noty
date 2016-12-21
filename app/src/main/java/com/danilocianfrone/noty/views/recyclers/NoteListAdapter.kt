@@ -9,8 +9,7 @@ import java.lang.ref.WeakReference
 
 class NoteListAdapter(listener: Listener, priority: Priority) :
         AbstractNoteList(),
-        NotePresentable.Priorited,
-        View.OnClickListener {
+        NotePresentable.Priorited {
 
     interface Listener {
         fun onClickedElement()
@@ -35,9 +34,5 @@ class NoteListAdapter(listener: Listener, priority: Priority) :
     override fun onUpdateView(data: MutableList<Note>) {
         super.onUpdateView(data)
         mDataset?.let { mListener.get().onRefreshed() }
-    }
-
-    override fun onClick(view: View) {
-        mListener.get()?.onClickedElement()
     }
 }

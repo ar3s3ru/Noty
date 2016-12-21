@@ -79,21 +79,13 @@ class NoteListController : BaseController() {
     }
 }
 
-class PagerAdapter(controller: NoteListController, saveControllerState: Boolean, pages: Array<PageController>)
+class PagerAdapter(controller: NoteListController, saveControllerState: Boolean,
+                   private val pages: Array<PageController>)
     // SUPERCLASSES //////////////////////////////////////////////////////////////////////////////////////////
     : ControllerPagerAdapter(controller, saveControllerState) {
 
-    // Use an array of WeakReferences to PageController instances to avoid memory leaks
-    private val refsArray =
-            pages
-            //Array<WeakReference<PageController>>(pages.size, { WeakReference(pages[it]) })
-
-    override fun getItem(position: Int): Controller =
-            refsArray[position]//.get()
-
-    override fun getCount(): Int =
-            refsArray.size
-
+    override fun getItem(position: Int): Controller = pages[position]
+    override fun getCount(): Int = pages.size
     override fun getPageTitle(position: Int): CharSequence =
             "${Priority.FromValue(position).String()} Priority"
 }

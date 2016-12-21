@@ -20,10 +20,7 @@ abstract class AbstractNoteList :
     protected var mDataset:   MutableList<Note>? = null
 
     override fun onAttach() =
-            onNull(mDataset, {
-                Log.i(this.toString(), "Updating on attaching")
-                notifyUpdate()
-            })
+            onNull(mDataset, { notifyUpdate() })
 
     override fun onUpdateError(throwable: Throwable) {
         throwable.printStackTrace()
@@ -32,7 +29,7 @@ abstract class AbstractNoteList :
     override fun onUpdateView(data: MutableList<Note>) {
         if (data.size > 0) {
             mDataset = data
-            notifyDataSetChanged()
+            notifyItemRangeChanged(0, data.size)
         }
     }
 

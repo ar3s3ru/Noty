@@ -3,6 +3,7 @@ package com.danilocianfrone.noty.views.controllers.paged
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,7 +73,9 @@ class PageController(args: Bundle) :
     override fun onRefreshed() {
         // If the NoteListAdapter has finished its refreshing, and it comes from
         // the SwipeRefreshLayout, set refreshing to false ('cause it's finished, now)
-        if (swiper.isRefreshing) { swiper.isRefreshing = false }
+        onlyOnBind {
+            if (swiper.isRefreshing) { swiper.isRefreshing = false }
+        }
     }
 
     internal companion object Factory {

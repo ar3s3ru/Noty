@@ -1,6 +1,7 @@
 package com.danilocianfrone.noty.views.controllers
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,7 @@ abstract class BaseController : Controller {
     constructor() : super()
     constructor(args: Bundle) : super(args)
 
-    private lateinit var unbinder: Unbinder
+    protected var unbinder: Unbinder? = null
     protected val notyApplication: Noty by lazy { applicationContext as Noty }
 
     /**
@@ -56,6 +57,10 @@ abstract class BaseController : Controller {
     override fun onDestroyView(view: View) {
         super.onDestroyView(view)
         // Unbind the unbinder (lol)
-        unbinder.unbind()
+        unbinder?.unbind()
+    }
+
+    protected inline fun onlyOnBind(lambda: () -> Unit) {
+        unbinder?.let { lambda() }
     }
 }
