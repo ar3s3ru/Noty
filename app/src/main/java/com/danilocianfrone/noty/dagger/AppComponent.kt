@@ -8,6 +8,7 @@ import com.danilocianfrone.noty.Noty
 import com.danilocianfrone.noty.models.RealmModule
 import com.danilocianfrone.noty.presenters.NotePresenter
 import com.danilocianfrone.noty.singleton.Names
+import com.danilocianfrone.noty.singleton.PreferenceGetter
 import com.danilocianfrone.noty.views.MainActivity
 import com.danilocianfrone.noty.views.NoteActivity
 import com.danilocianfrone.noty.views.controllers.NoteCreationController
@@ -96,7 +97,7 @@ class AppModule(private val application: Application) {
      * @return true if the [Noty] application is booted for the first time
      */
     @Provides @Named(Names.FIRST_BOOT) fun provideFirstBootValue(prefs: SharedPreferences) =
-            prefs.getBoolean(Names.FIRST_BOOT, true)
+            PreferenceGetter.firstBoot(prefs)
 }
 
 /**

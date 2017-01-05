@@ -1,12 +1,8 @@
 package com.danilocianfrone.noty.presenters
 
-import android.util.Log
-import com.danilocianfrone.noty.doOnNullable
 import com.danilocianfrone.noty.models.Note
 import io.realm.Realm
-import io.realm.RealmResults
 import io.realm.Sort
-import java.lang.ref.WeakReference
 
 /**
  * Presenter used for all the views that needs Note as their models.

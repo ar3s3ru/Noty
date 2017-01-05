@@ -15,10 +15,8 @@ import com.bluelinelabs.conductor.support.ControllerPagerAdapter
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.AppScope
 import com.danilocianfrone.noty.models.Priority
-import com.danilocianfrone.noty.singleton.ControllerFactory
 import com.danilocianfrone.noty.views.controllers.paged.PageController
 import com.squareup.leakcanary.RefWatcher
-import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class NoteListController : BaseController() {

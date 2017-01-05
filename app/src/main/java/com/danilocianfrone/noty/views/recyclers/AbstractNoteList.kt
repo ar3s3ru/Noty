@@ -1,7 +1,6 @@
 package com.danilocianfrone.noty.views.recyclers
 
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import butterknife.ButterKnife

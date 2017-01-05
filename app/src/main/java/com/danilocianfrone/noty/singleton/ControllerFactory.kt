@@ -1,9 +1,7 @@
 package com.danilocianfrone.noty.singleton
 
 import com.bluelinelabs.conductor.Controller
-import com.danilocianfrone.noty.models.Priority
 import com.danilocianfrone.noty.views.controllers.DocumentController
-import com.danilocianfrone.noty.views.controllers.FastCreationController
 import com.danilocianfrone.noty.views.controllers.NoteCreationController
 import com.danilocianfrone.noty.views.controllers.NoteListController
 

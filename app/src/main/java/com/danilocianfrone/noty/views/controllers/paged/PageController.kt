@@ -3,7 +3,6 @@ package com.danilocianfrone.noty.views.controllers.paged
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +12,8 @@ import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.PageControllerModule
 import com.danilocianfrone.noty.dagger.PageControllerScope
-import com.danilocianfrone.noty.models.Note
 import com.danilocianfrone.noty.models.Priority
-import com.danilocianfrone.noty.presenters.AbstractPresenter
 import com.danilocianfrone.noty.presenters.NotePresenter
-import com.danilocianfrone.noty.singleton.ControllerFactory
 import com.danilocianfrone.noty.singleton.Names
 import com.danilocianfrone.noty.views.controllers.BaseController
 import com.danilocianfrone.noty.views.controllers.FastCreationController
@@ -37,13 +33,13 @@ class PageController(args: Bundle) :
         NoteListAdapter.Listener {
 
     @BindView(R.id.controller_page_recycler)
-    override lateinit var recycler: RecyclerView
+    override lateinit var mRecycler: RecyclerView
 
     @BindView(R.id.controller_page_swipe)
-    override lateinit var swiper: SwipeRefreshLayout
+    override lateinit var mSwiper: SwipeRefreshLayout
 
     @Inject @PageControllerScope lateinit var priority:  Priority
-    @Inject @PageControllerScope override lateinit var adapter: NoteListAdapter
+    @Inject @PageControllerScope override lateinit var mAdapter: NoteListAdapter
 
     private val TAG by lazy { "PageController_${priority.name}" }
     private val objectGraph by lazy {
@@ -74,7 +70,7 @@ class PageController(args: Bundle) :
         // If the NoteListAdapter has finished its refreshing, and it comes from
         // the SwipeRefreshLayout, set refreshing to false ('cause it's finished, now)
         onlyOnBind {
-            if (swiper.isRefreshing) { swiper.isRefreshing = false }
+            if (mSwiper.isRefreshing) { mSwiper.isRefreshing = false }
         }
     }
 

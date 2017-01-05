@@ -1,6 +1,5 @@
 package com.danilocianfrone.noty.views.recyclers
 
-import android.view.View
 import com.danilocianfrone.noty.doOnNullable
 import com.danilocianfrone.noty.models.Note
 import com.danilocianfrone.noty.models.Priority

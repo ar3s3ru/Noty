@@ -37,7 +37,7 @@ import javax.inject.Scope
     /**
      * Provides the [NoteListAdapter] used with the [PageController] [android.support.v7.widget.RecyclerView].
      *
-     * @param priority: [Priority] value that notes showed by the adapter must have
+     * @param priority: [Priority] value that notes showed by the mAdapter must have
      * @return [NoteListAdapter] instance
      */
     @Provides @PageControllerScope fun provideNoteListAdapter(priority: Priority) =
