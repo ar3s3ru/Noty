@@ -4,6 +4,7 @@ import com.danilocianfrone.noty.doOnNullable
 import com.danilocianfrone.noty.models.Note
 import com.danilocianfrone.noty.models.Priority
 import com.danilocianfrone.noty.presenters.NotePresentable
+import io.realm.RealmResults
 import java.lang.ref.WeakReference
 
 class NoteListAdapter(listener: Listener, priority: Priority) :
@@ -30,7 +31,7 @@ class NoteListAdapter(listener: Listener, priority: Priority) :
 
     override fun withPriority(): Priority = mPriority
 
-    override fun onUpdateView(data: MutableList<Note>) {
+    override fun onUpdateView(data: RealmResults<Note>) {
         super.onUpdateView(data)
         mDataset?.let { mListener.get().onRefreshed() }
     }

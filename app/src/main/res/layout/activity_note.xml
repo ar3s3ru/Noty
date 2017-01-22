@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.bluelinelabs.conductor.ChangeHandlerFrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_note_root"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_note_layout"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/activity_note_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    
+    <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
+        android:id="@+id/activity_note_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

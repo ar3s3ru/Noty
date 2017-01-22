@@ -9,14 +9,15 @@ import com.danilocianfrone.noty.models.Note
 import com.danilocianfrone.noty.onNull
 import com.danilocianfrone.noty.presenters.IPresentable
 import com.danilocianfrone.noty.presenters.IPresenter
+import io.realm.RealmResults
 import java.lang.ref.WeakReference
 
 abstract class AbstractNoteList :
         RecyclerView.Adapter<NoteListViewHolder>(),
-        IPresentable<MutableList<Note>> {
+        IPresentable<RealmResults<Note>> {
 
-    override  var mPresenter: WeakReference<IPresenter<MutableList<Note>>>? = null
-    protected var mDataset:   MutableList<Note>? = null
+    override  var mPresenter: WeakReference<IPresenter<RealmResults<Note>>>? = null
+    protected var mDataset:   RealmResults<Note>? = null
 
     override fun onAttach() =
             onNull(mDataset, { notifyUpdate() })
@@ -25,7 +26,7 @@ abstract class AbstractNoteList :
         throwable.printStackTrace()
     }
 
-    override fun onUpdateView(data: MutableList<Note>) {
+    override fun onUpdateView(data: RealmResults<Note>) {
         if (data.size > 0) {
             mDataset = data
             notifyItemRangeChanged(0, data.size)
@@ -61,7 +62,7 @@ abstract class AbstractNoteList :
                 holder.unbinder = ButterKnife.bind(holder, holder.itemView)
             }
 
-            holder.layout.setBackgroundResource(item.priority.ColorBody())
+            holder.layout.color  = item.priority.ColorBody()
             holder.content.text  = item.content
             holder.creation.text = item.creation.toString()
             holder.creation.setBackgroundResource(item.priority.ColorTop())

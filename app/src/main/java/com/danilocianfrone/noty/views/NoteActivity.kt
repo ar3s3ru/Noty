@@ -1,6 +1,7 @@
 package com.danilocianfrone.noty.views
 
 import android.os.Bundle
+import android.support.v7.widget.Toolbar
 import butterknife.BindView
 import com.bluelinelabs.conductor.ChangeHandlerFrameLayout
 import com.bluelinelabs.conductor.Conductor
@@ -15,6 +16,7 @@ import javax.inject.Inject
 class NoteActivity : BaseActivity() {
 
     @BindView(R.id.activity_note_root) lateinit var noteActivityRoot: ChangeHandlerFrameLayout
+    @BindView(R.id.activity_note_toolbar) lateinit var noteToolbar: Toolbar
 
     @Inject @AppScope lateinit var refWatcher: RefWatcher
 
@@ -25,6 +27,9 @@ class NoteActivity : BaseActivity() {
 
         // Inject object graph
         notyApplication.objectGraph.inject(this)
+
+        // Attach Toolbar
+        setSupportActionBar(noteToolbar)
 
         // Attach Conductor root
         conductorRouter = Conductor.attachRouter(this, noteActivityRoot, savedInstanceState)

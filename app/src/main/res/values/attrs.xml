@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="NoteView">
-        <attr name="foldingSize" format="dimension" />
+    <declare-styleable name="NoteLayout">
+        <attr name="color" format="color" />
+        <attr name="padding" format="dimension" />
     </declare-styleable>
 </resources>

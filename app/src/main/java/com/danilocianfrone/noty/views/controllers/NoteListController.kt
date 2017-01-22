@@ -16,6 +16,7 @@ import com.danilocianfrone.noty.R
 import com.danilocianfrone.noty.dagger.AppScope
 import com.danilocianfrone.noty.models.Priority
 import com.danilocianfrone.noty.views.controllers.paged.PageController
+import com.danilocianfrone.noty.views.widgets.ColoredPagerAdapter
 import com.squareup.leakcanary.RefWatcher
 import javax.inject.Inject
 
@@ -77,13 +78,19 @@ class NoteListController : BaseController() {
     }
 }
 
-class PagerAdapter(controller: NoteListController, saveControllerState: Boolean,
-                   private val pages: Array<PageController>)
-    // SUPERCLASSES //////////////////////////////////////////////////////////////////////////////////////////
-    : ControllerPagerAdapter(controller, saveControllerState) {
+class PagerAdapter(
+        controller: NoteListController,
+        saveControllerState: Boolean,
+        private val pages: Array<PageController>
+) : ColoredPagerAdapter(controller, saveControllerState) {
 
     override fun getItem(position: Int): Controller = pages[position]
+
     override fun getCount(): Int = pages.size
+
+    override fun getColor(position: Int): Int =
+            Priority.FromValue(position).ColorTop()
+
     override fun getPageTitle(position: Int): CharSequence =
             "${Priority.FromValue(position).String()} Priority"
 }

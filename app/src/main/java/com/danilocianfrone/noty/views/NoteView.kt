@@ -26,7 +26,7 @@ class NoteView : LinearLayout {
             Point(), Point(), Point(), Point(), Point()
     )
 
-    private val foldingSize: Int
+    //private val foldingSize: Int
 
     init {
         mPaintTop.style  = Paint.Style.FILL_AND_STROKE
@@ -48,13 +48,7 @@ class NoteView : LinearLayout {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) :
             super(context, attrs, defStyleAttr, defStyleRes) {
         // Get TypedArray for custom options
-        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.NoteView, 0, 0)
-
-        try {
-            foldingSize = typedArray.getDimension(R.styleable.NoteView_foldingSize, 0f).toInt()
-        } finally {
-            typedArray.recycle()
-        }
+        //
     }
 
     fun of(note: Note): NoteView {
@@ -71,11 +65,11 @@ class NoteView : LinearLayout {
     }
 
     fun pointMeasuring(width: Int, height: Int) {
-        points[0].x = paddingLeft + foldingSize
+        points[0].x = paddingLeft //+ foldingSize
         points[0].y = paddingTop
 
         points[1].x = paddingLeft
-        points[1].y = paddingTop + foldingSize
+        points[1].y = paddingTop //+ foldingSize
 
         points[2].x = paddingLeft
         points[2].y = height - paddingBottom
@@ -90,7 +84,7 @@ class NoteView : LinearLayout {
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         for (i in 0..1) {
             val view = getChildAt(i) as? TextView ?:
-                    throw IllegalStateException("First two NoteView childs must be TextViews")
+                    throw IllegalStateException("First two NoteLayout childs must be TextViews")
         }
 
         super.onLayout(changed, left, top, right, bottom)
@@ -133,9 +127,9 @@ class NoteView : LinearLayout {
     }
 
     override fun toString(): String =
-            "NoteView{points=[${points[0]}, ${points[1]}, ${points[2]}, ${points[3]}, ${points[4]}}"
+            "NoteLayout{points=[${points[0]}, ${points[1]}, ${points[2]}, ${points[3]}, ${points[4]}}"
 
     companion object {
-        const val TAG = "NoteView"
+        const val TAG = "NoteLayout"
     }
 }

@@ -125,7 +125,7 @@ abstract class BasePagedController<A : AbstractNoteList> :
         private const val LAYOUT_MANAGER = "BasePagedController.layoutManager"
         private const val COLUMN_NUMBER  = "BasePagedController.columnNumber"
 
-        private const val MIN_COLUMN = 1
+        private const val MIN_COLUMN = 2
         private const val MAX_COLUMN = 4
     }
 }
